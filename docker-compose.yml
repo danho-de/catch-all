@@ -1,0 +1,28 @@
+services:
+  catch-all:
+    image: ghcr.io/danho-de/catch-all:latest
+    container_name: catch-all
+    restart: unless-stopped
+    environment:
+      - PORT=8080              # Change server port
+      - EMAIL=your@email.com  # Change email
+      - LOGO_PATH=https://placehold.co/400x300  # Change logo path
+      - LOGO_NAME=myLogo.png  # Change logo name (to use custom logo from volume)
+    volumes:
+      - ./data/logo:/app/public/logo:ro
+    networks:
+      - traefik-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-proxy
+      # HTTP router - catch all unmatched requests
+      - traefik.http.routers.catch-all.rule=HostRegexp(`^.+$`)
+      - traefik.http.routers.catch-all.entrypoints=websecure
+      - traefik.http.routers.catch-all.tls=true
+      - traefik.http.routers.catch-all.priority=1
+      # Service
+      - traefik.http.services.catch-all.loadbalancer.server.port=8080
+      
+networks:
+  traefik-proxy:
+    external: true

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="%PUBLIC_URL%/logo/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Site Not Found</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --container-bg: white;
+            --text-color: #000;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-bg: #333;
+            --button-text: #fff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --container-bg: #2d2d2d;
+                --text-color: #e0e0e0;
+                --shadow-color: rgba(255, 255, 255, 0.1);
+                --button-bg: #f0f0f0;
+                --button-text: #000;
+            }
+        }
+
+        body.light-mode {
+            --bg-color: #f8f9fa;
+            --container-bg: white;
+            --text-color: #000;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-bg: #333;
+            --button-text: #fff;
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --container-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --shadow-color: rgba(255, 255, 255, 0.1);
+            --button-bg: #e0e0e0;
+            --button-text: #000;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: var(--container-bg);
+            padding: 20px;
+            box-shadow: 0 0 10px var(--shadow-color);
+            border-radius: 8px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.3s;
+        }
+
+        .dark-mode-toggle:hover {
+            opacity: 0.8;
+        }
+
+        a {
+            color: #007bff;
+        }
+
+        body.dark-mode a {
+            color: #4da3ff;
+        }
+    </style>
+</head>
+<body>
+    <button class="dark-mode-toggle" id="darkModeToggle">🌙 Dark Mode</button>
+    
+    <div class="container">
+        <img id="logoPath" alt="Logo" width="400" />
+        <h1>Website Not Found</h1>
+        <p>We're sorry, but the page you are looking for does not exist.</p>
+        <div>
+            <strong>Current URL:</strong> <span id="currentPath"></span>
+        </div>
+        <p>
+            For more info:
+            <a id="contactEmail"></a>
+        </p>
+    </div>
+
+    <script>
+        // Display current full URL
+        document.getElementById('currentPath').textContent = window.location.href;
+        // Log ASCII art to console
+        console.log('%c' +
+            '\n' +
+            'Created by:\n' +
+            '  ____                             ____              _         \n' +
+            ' / ___| ___  ___  _ __ __ _  ___  |  _ \\  __ _ _ __ | |__   ___\n' +
+            '| |  _ / _ \\/ _ \\| \'__/ _` |/ _ \\ | | | |/ _` | \'_ \\| \'_ \\ / _ \\\n' +
+            '| |_| |  __/ (_) | | | (_| |  __/ | |_| | (_| | | | | | | | (_) |\n' +
+            ' \\____|\\___|\\___/|_|  \\__, |\\___| |____/ \\__,_|_| |_|_| |_|\\___/\n' +
+            '                      |___/                                     \n' +
+            '\n' +
+            '                                      https://github.com/danho-de',
+            'color: #4da3ff; font-family: monospace; font-weight: bold;'
+        );
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        // Fetch config data
+        fetch('/config')
+            .then(response => response.json())
+            .then(data => {
+                const emailLink = document.getElementById('contactEmail');
+                emailLink.href = `mailto:${data.email}`;
+                emailLink.textContent = data.email;
+
+                const logoImg = document.getElementById('logoPath');
+                logoImg.src = data.logo_name === 'logo.png' ? data.logo_path : '/logo/' + data.logo_name;
+            })
+            .catch(err => console.log('Fetch config error:', err));
+        // Check for saved preference or use browser preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.className = savedTheme;
+            updateButtonText(savedTheme);
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.classList.contains('light-mode') ? 'light-mode' : 'dark-mode';
+            
+            let newTheme;
+            if (currentTheme === 'dark-mode') {
+                newTheme = 'light-mode';
+            } else {
+                newTheme = 'dark-mode';
+            }
+            
+            document.body.className = newTheme;
+            localStorage.setItem('theme', newTheme);
+            updateButtonText(newTheme);
+        });
+
+        function updateButtonText(theme) {
+            if (theme === 'dark-mode') {
+                darkModeToggle.textContent = '☀️ Light Mode';
+            } else {
+                darkModeToggle.textContent = '🌙 Dark Mode';
+            }
+        }
+    </script>
+</body>
+
+</html>
