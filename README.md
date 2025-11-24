@@ -12,7 +12,7 @@ This service acts as a default fallback for Traefik reverse proxy, displaying a 
 - **Static File Server**: Serves files from the `./public` directory
 - **Custom 404 Page**: Branded error page with dark mode support
 - **Configurable**: Environment variables for port, email, and logo
-- **Lightweight**: Statically-linked musl binary running on scratch Docker image (not 5MB)
+- **Lightweight**: Statically-linked musl binary running on scratch Docker image (~5MB)
 - **Fast & Secure**: Built with Rust for performance and memory safety
 
 ## Environment Variables
@@ -130,9 +130,9 @@ Any request that doesn't match other Traefik routes will be directed to this ser
 ## Docker Image Details
 
 - **Base Image**: `scratch` (minimal, secure)
-- **Binary**: Statically-linked musl binary (~5-10MB)
+- **Binary**: Statically-linked musl binary (~5MB)
 - **Runtime**: No dependencies, completely self-contained
-- **Size**: Final image size ~10-15MB including static files
+- **Size**: Final image size ~5MB including static files
 
 ## API Endpoints
 
@@ -151,4 +151,4 @@ Returns server configuration as JSON:
 
 ## License
 
-MIT
+This project is licensed under the MIT [License](https://github.com/danho-de/catch-all/blob/main/LICENSE). See the LICENSE file for details.
